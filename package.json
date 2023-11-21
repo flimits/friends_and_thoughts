@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^7.0.2"
+  },
+  "name": "friends_and_thoughts",
+  "description": "This API is to mimic the interactions between users and their friends in a Social Networking environment. The user will be able to share and recieve thought (comments from friends). They can also create a friends list, and manage the throughts and friends by changing or deleting them.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
