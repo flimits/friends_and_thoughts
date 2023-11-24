@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const { connect, connection } = require('mongoose');
 
-// Wrap Mongoose around local connection to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/friendsDB');
+// Set up connection string that will work on heroku or some external db
+const connectionString = process.env.MONGODB_UIR || 'mongodb://127.0.0.1:27017/friendsDB';
 
-// Export connection
-module.exports = mongoose.connection;
+connect(connectionString);
+module.exports = connection;
