@@ -1,4 +1,6 @@
 const router = require('express').Router();
+
+// Setting up all routes for user(s)
 const {
   getUsers,
   createUsers,
@@ -10,13 +12,7 @@ const {
 router.route('/').get(getUsers).post(createUsers);
 
 // /api/users as well, to get one user or delete one user by id
-// router.route('/:userId').get(findAUser);
 router.route('/:userId').get(findAUser).delete(deleteAUser);
-// /api/courses/:courseId
-// router
-//   .route('/:courseId')
-//   .get(getSingleCourse)
-//   .put(updateCourse)
-//   .delete(deleteCourse);
+
 
 module.exports = router;
