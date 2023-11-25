@@ -92,8 +92,103 @@ This was a great oportunity to learn Mongoose and Mongodb. I was excited to get 
 
 ## Code Snippets
 
+This is a typical server.js file, but adding db connection to the mongoDB server
+```js
+const express = require('express');
+const db = require('./config/connection');
+const routes = require('./routes');
 
+const PORT = process.env.PORT || 3001;
+const app = express();
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(routes);
+
+db.once('open', () => {
+  app.listen(PORT, () => {
+    console.log(`API server for running on port ${PORT}!`);
+  });
+});
+```
+We now set up our routes
+```js
+const router = require('express').Router();
+const userRoutes = require('./userRoutes');
+const thoughtRoutes = require('./thoughtRoutes');
+
+router.use('/users', userRoutes);
+router.use('/thoughts', thoughtRoutes);
+
+module.exports = router;
+```
+Which will point to the locations of the user and thoughtRoutes.
+<br>
+
+Some key code would be how routes are set up differently for mongoose as opposed to sequelize. Here is for thoughts routing. All will be undfer /api/thoughts for GET, POST, DELETE
+```js
+const {
+  getThoughts,
+  createThought,
+  findAThought,
+  deleteAThought,
+  updateAThought,
+} = require('../../controllers/thought.js');
+
+// /api/thought .. get all thought and create a thought
+router.route('/').get(getThoughts).post(createThought);
+
+// /api/thought as well, to get one thought or delete one thought by id
+router.route('/:thoughtId').get(findAThought).delete(deleteAThought).put(updateAThought);
+```
+As an example for the modeling of mongoose, here is the Schema setup for users.
+```js
+const { Schema, model } = require('mongoose');
+
+// Schema to create User model
+const userSchema = new Schema(
+  {
+    username: {
+      type: String,
+      unique: true,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      match: [/.+@.+\..+/, 'Please enter a valid e-mail address'],
+    },
+    thoughts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Thought',
+      },
+    ],
+    friends: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+  },
+  {
+    // Mongoose supports two Schema options to transform Objects after querying MongoDb: toJSON and toObject - Equivalent.
+    // Here we are indicating that we want virtuals to be included with our response, overriding the default behavior
+    toJSON: {
+      virtuals: true,
+    },
+    id: false,
+  }
+);
+
+userSchema.virtual('friendCount').get(function () {
+  return `${this.friends.length}`;
+});
+
+NOTE: the requirments for mongoose. But also, it is similary to that of Sequelize.
+```
 
 
 ## Contact Info
