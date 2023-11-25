@@ -30,12 +30,9 @@ module.exports = {
       if (!user) {
         return res.status(404).json({ message: 'No user with that ID' });
       }
-      // I might not need email, but it is here if I do.
-      // const email = user.email;
 
       res.json({
         user,
-        // email,
       });
     } catch (err) {
       res.status(500).json(err);
@@ -50,10 +47,28 @@ module.exports = {
         return res.status(404).json({ message: 'No user to delete with that ID' });
       }
 
-      res.json({user});
+      res.json({ user });
     } catch (err) {
       res.status(500).json(err);
     }
   },
-  
+
+  async updateAUser(req, res) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: 'No user to update with that ID' });
+      }
+
+      res.json({ user });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
 }
